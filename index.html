@@ -177,7 +177,17 @@ function startLevel() {
         list.appendChild(li);
     });
 
-    new Sortable(list, { animation: 200 });
+  // --- 修改這部分：確保每關都重新綁定，並增加移動端兼容參數 ---
+    if (window.gameSortable) window.gameSortable.destroy(); // 銷毀舊實例防止衝突
+    
+    window.gameSortable = new Sortable(list, { 
+        animation: 200,
+        forceFallback: true,   // 強制使用插件的降級方案，解決 iOS 不支持原生拖拽的問題
+        fallbackTolerance: 3,  // 容許手指移動 3px 才算拖拽，防止點擊誤判
+        delay: 0,              // 觸摸延遲
+        touchStartThreshold: 0 // 觸摸門檻
+    });
+    
     startTime = Date.now();
     timerRunning = true;
     updateTimer();
